@@ -78,10 +78,12 @@ template_options = {'tailwind': TAILWIND, 'quasar': QUASAR, 'quasar_version': QU
                     'static_name': STATIC_NAME, 'component_file_list': component_file_list, 'no_internet': NO_INTERNET}
 
 JustPy.log=logging.getLogger(LOGGING_LOGGER)
+formatter = logging.Formatter(fmt='[JP] %(asctime)s %(levelname)-8s %(funcName)-20.20s %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+JustPy.log.addHandler(handler)
 JustPy.log.setLevel(LOGGING_LEVEL)
-
-logging.basicConfig(level=LOGGING_LEVEL, format='%(levelname)s %(module)s: %(message)s')
-
+JustPy.log.propagate = False
 
 app = Starlette(debug=DEBUG)
 app.mount(STATIC_ROUTE, StaticFiles(directory=STATIC_DIRECTORY), name=STATIC_NAME)
@@ -161,7 +163,7 @@ class Homepage(HTTPEndpoint):
             else:
                 load_page = func_to_run()
         if isinstance(load_page,Response):
-            logging.debug('Returning raw startlette.responses.Response.')
+            JustPy.log.debug('Returning raw startlette.responses.Response.')
             return load_page
         assert issubclass(type(load_page), WebPage), 'Function did not return a web page'
         assert len(load_page) > 0 or load_page.html, '\u001b[47;1m\033[93mWeb page is empty, add components\033[0m'
