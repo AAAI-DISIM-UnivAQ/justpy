@@ -78,10 +78,11 @@ template_options = {'tailwind': TAILWIND, 'quasar': QUASAR, 'quasar_version': QU
                     'static_name': STATIC_NAME, 'component_file_list': component_file_list, 'no_internet': NO_INTERNET}
 
 JustPy.log=logging.getLogger(LOGGING_LOGGER)
+formatter = logging.Formatter(fmt='[JP] %(asctime)s %(levelname)-8s %(funcName)-20.20s %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+JustPy.log.addHandler(handler)
 JustPy.log.setLevel(LOGGING_LEVEL)
-
-logging.basicConfig(level=LOGGING_LEVEL, format='%(levelname)s %(module)s: %(message)s')
-
 
 app = Starlette(debug=DEBUG)
 app.mount(STATIC_ROUTE, StaticFiles(directory=STATIC_DIRECTORY), name=STATIC_NAME)
@@ -118,7 +119,7 @@ async def justpy_startup():
             await startup_func()
         else:
             startup_func()
-    print(f'JustPy ready to go on http://{HOST}:{PORT}')
+    print(f'JustPy-test ready to go on http://{HOST}:{PORT}')
 
 
 @app.route("/{path:path}")
