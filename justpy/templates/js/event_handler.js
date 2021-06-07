@@ -131,11 +131,6 @@ function send_to_server(e, event_type, debug_flag) {
         console.log({'type': event_type, 'event_data': e});
     }
     if (use_websockets) {
-        if (web_socket_closed) {
-            let ok_to_reload = confirm('Page needs to be reloaded, click OK to reload');
-            if (ok_to_reload) window.location.reload();
-            return;
-        }
         if (websocket_ready) {
             socket.send(JSON.stringify({'type': event_type, 'event_data': e}));
         } else {
